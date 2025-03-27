@@ -5,6 +5,19 @@ Stores static global values to be used in game.
 
 from enum import Enum
 
+FANTASY_NAMES = [
+            "Arannis", "Thalindra", "Gorim", "Elowen", "Kaelen",
+            "Drakthar", "Sylvara", "Vorstag", "Lyra", "Zalthar",
+            "Morwen", "Kelvhan", "Aelric", "Virelith", "Fenthis",
+            "Bryndis", "Xalvador", "Tessara", "Korrin", "Mythra",
+            "Eryndor", "Quilathe", "Threx", "Isolde", "Ravonak",
+            "Altharion", "Calista", "Galdric", "Nymeria", "Zarvok",
+            "Leothar", "Seraphina", "Draven", "Aeliana", "Vornak",
+            "Thalor", "Ellaria", "Krynn", "Selene", "Rhovan",
+            "Faelar", "Ysolde", "Varis", "Zyra", "Torhild",
+            "Andareth", "Maelis", "Faylen", "Jorund", "Eldrin"
+        ]
+
 class MAX_DEX_BONUS(Enum):
     MAXANY = 4
     MAXTHREE = 3

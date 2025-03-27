@@ -183,3 +183,16 @@ class World():
         #    raise Exception("Unable to find empty tile in world.")
 
         return tileToReturn
+    
+    def getAllUnoccupiedTiles(self):
+        '''Returns all unoccupied tiles in the world'''
+        unoccupiedTiles = []
+
+        for rowNum in range(self.gridSize):
+           for rowCol in range(self.gridSize):                  
+                individualTile = self.grid[rowCol][rowNum]
+
+                if not individualTile.isOccupied():
+                    unoccupiedTiles.append(individualTile)
+
+        return unoccupiedTiles
