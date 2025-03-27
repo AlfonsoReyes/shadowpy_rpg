@@ -1,3 +1,4 @@
+import random
 
 class Util():
     """Class with static functions for general utility
