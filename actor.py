@@ -1,3 +1,6 @@
+from gameGlobals import *
+import math
+from util import *
 
 class Actor:
 
@@ -128,22 +131,22 @@ class Player(Actor):
 
     #Set of helper functions to collect players stat bonus'
     def getStrengthBonus(self):
-        StrengthBonus = math.floor((self.strength-10)/2)
+        StrengthBonus =         math.floor((self.strength-10)/2)
         return StrengthBonus
     def getDexterityBonus(self):
-        dexterityBonus = math.floor((self.dexterity-10)/2)
+        dexterityBonus =        math.floor((self.dexterity-10)/2)
         return dexterityBonus
     def getConstitutionBonus(self):
-        constititionBonus = math.floor((self.constitution-10)/2)
+        constititionBonus =     math.floor((self.constitution-10)/2)
         return constititionBonus
     def getWisdomBonus(self):
-        wisdomBonus = math.floor((self.wisdom-10)/2)
+        wisdomBonus =           math.floor((self.wisdom-10)/2)
         return wisdomBonus
     def getIntelligenceBonus(self):
-        intelligenceBonus = math.floor((self.intelligence-10)/2)
+        intelligenceBonus =     math.floor((self.intelligence-10)/2)
         return intelligenceBonus
     def getCharismaBonus(self):
-        charismaBonus = math.floor((self.charisma-10)/2)
+        charismaBonus =         math.floor((self.charisma-10)/2)
         return charismaBonus
     #Set of helper functions to collect players stat bonus'
     
