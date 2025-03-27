@@ -1,3 +1,8 @@
+"""gameGlobals.py
+
+Stores static global values to be used in game.
+"""
+
 from enum import Enum
 
 class MAX_DEX_BONUS(Enum):
