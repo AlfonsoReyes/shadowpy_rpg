@@ -232,6 +232,21 @@ class Game():
                 #RIGHT ARROW (Active Player Right)
                 playerDiffX = 1
 
+            #Sends directions to active player actor for movement in game
+            if activePlayer and (playerDiffX != 0 or playerDiffY != 0):
+                activePlayer.handlePlayerMovement(playerDiffX, playerDiffY, self)
+                    #determine if previously highlighted tile should become un-highlighted
+                if prevGridX != gridX or prevGridY != gridY:
+                    myOldTile = myWorld.grid[prevGridX][prevGridY]
+                    myOldTile.render(cursorFocus=False)
+                pass
+                nearbyActors = activePlayer.getNearbyActors(self)
+                for actor in nearbyActors:
+                    pass
+                    #friend/foe check
+                    #foes run searchForTargetInLosRange(activeplayer, self)
+                    #return true/false for running combat gamestate
+
             myTile = None
 
             if gridX+diffX < gridSize and gridY+diffY < gridSize and gridX+diffX >= 0 and gridY+diffY >= 0:
@@ -247,56 +262,10 @@ class Game():
                 myTile = myWorld.grid[gridX][gridY]
                 myTile.render(cursorFocus=True)
 
-                #ddeterrmine if previously highlighted tile should become un-highlighted
+                #determine if previously highlighted tile should become un-highlighted
                 if prevGridX != gridX or prevGridY != gridY:
                     myOldTile = myWorld.grid[prevGridX][prevGridY]
                     myOldTile.render(cursorFocus=False)
-
-            if (activePlayer is not None 
-                and (playerDiffX != 0 or playerDiffY != 0)  #Have we pressed any keys that would cause player movement
-                and playerGridX+playerDiffX < gridSize      #If players destination tile is within grid size
-                and playerGridY+playerDiffY < gridSize      #If players destination tile is within grid size
-                and playerGridX+playerDiffX >= 0            #checks player destination against lowest bound of grid
-                and playerGridY+playerDiffY >= 0):          #checks player destination against lowest bound of grid
-
-                #store grid values BEFORE they're updated
-                prevPlayerGridX = playerGridX
-                prevPlayerGridY = playerGridY
-
-                #update desired player destination
-                playerGridX = playerDiffX + playerGridX
-                playerGridY = playerDiffY + playerGridY
-
-                myDestinationTile = myWorld.grid[playerGridX][playerGridY]  
-
-                if not myDestinationTile.isOccupied():
-
-                    myPrevTile = myWorld.grid[prevPlayerGridX][prevPlayerGridY]
-                    
-                    Cursor.move(65,9)
-                    print(f"My Prev Tile:{myPrevTile.coords}")
-                    Cursor.move(65,10)
-                    print(f"my Destination Tile: {myDestinationTile.coords}")
-                    Cursor.move(65,11)
-                    print(f"{activePlayer.name}'s Armor Class: {activePlayer.armorClass}")
-                    Cursor.move(65,12)
-                    print(f"equipped: {activePlayer.equipped[EQUIP_SLOTS.MAINHAND].name}")
-                    
-                    myPrevTile.actors.remove(activePlayer)
-                    myDestinationTile.actors.append(activePlayer)
-                    activePlayer.coords = (playerGridX, playerGridY)
-                    Cursor.move(65,13)
-                    print(f"my active player coords:{activePlayer.coords}")
-
-                    myDestinationTile.render()
-
-                else:
-                    #If the tile is occupied, we must reset the positioning of active players location for further movement
-                    playerGridX = activePlayer.coords[0]
-                    playerGridY = activePlayer.coords[1]
-        
-                if prevPlayerGridX != playerGridX or prevPlayerGridY != playerGridY:
-                    myPrevTile.render()
 
                 #myTile.render(cursorFocus=True)
 

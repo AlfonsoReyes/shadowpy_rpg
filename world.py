@@ -86,8 +86,6 @@ class World():
         self.gridSize = gridSize
         self.grid =     self.generateWorldGrid()
         #define containers where players and enemy Actor instances will be stored
-        self.players =  []
-        self.enemies =  []
 
     def generateWorldGrid(self):
         """Generate 2-D matrix, where by default, each grid cell is an empty Tile."""

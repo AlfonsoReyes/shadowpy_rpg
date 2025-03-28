@@ -24,6 +24,16 @@ class MAX_DEX_BONUS(Enum):
     MAXTWO = 2
     MAXZERO = 0
 
+class SOCIAL_GROUP(Enum):
+    PARTY = 1
+    ALLY = 2
+    ENEMY = 3
+    NEUTRAL = 4
+    GOBLINS_HATERS = 5
+    GOBLIN_LOVERS = 6
+    GOBLIN_GOBLERS = 7
+    GOBLINS = 8
+
 class EQUIP_SLOTS(Enum):
     MAINHAND = 1
     OFFHAND = 2

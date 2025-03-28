@@ -1,16 +1,18 @@
 from gameGlobals import *
 import math
 from util import *
+import msvcrt
 
 class Actor:
 
-    def __init__(self, id, hp, moveSpeed, losRange, coords):
+    def __init__(self, id, hp, moveSpeed, losRange, coords, socialGroup):
 
         self.id =           id
         self.hp =           hp
         self.moveSpeed =    moveSpeed
         self.losRange =     losRange
         self.coords =       coords
+        self.socialGroup =  socialGroup
 
     def tellLocation(self):
 
@@ -47,6 +49,14 @@ class Actor:
 
         return output
     
+    def getNearbyActors(self, game, radius=30):
+        """Returns a list of actors within radius of this actor"""
+        pass
+        nearbyActors = []
+            #code
+
+        return nearbyActors
+    
 class Player(Actor):
 
     # def __init__(self, id, hp, moveSpeed, losRange, coords, name, inventory=[]):
@@ -67,6 +77,7 @@ class Player(Actor):
         self.spellList =    spellList
         self.maximumInventorySize = self.maximumInventory()
         self.armorClass =   self.getArmorClass()
+        #self.activePlayer = false
 
     def maximumInventory(self):
         maxInventory = max(self.strength, 10)
@@ -83,6 +94,61 @@ class Player(Actor):
                 
         armorClass = equippedArmor.flatArmorClass + (min(dexBonus, equippedArmor.maxDexBonus))
         return armorClass
+
+    def handlePlayerMovement(self, playerDiffX, playerDiffY, gameState):
+        
+        playerGridX, playerGridY = self.coords
+
+        if ((playerDiffX != 0 or playerDiffY != 0)  #Have we pressed any keys that would cause player movement
+            and playerGridX+playerDiffX < gameState.worldSize      #If players destination tile is within grid size
+            and playerGridY+playerDiffY < gameState.worldSize       #If players destination tile is within grid size
+            and playerGridX+playerDiffX >= 0            #checks player destination against lowest bound of grid
+            and playerGridY+playerDiffY >= 0):          #checks player destination against lowest bound of grid
+
+            #store grid values BEFORE they're updated
+            prevPlayerGridX = playerGridX
+            prevPlayerGridY = playerGridY
+
+            #update desired player destination
+            playerGridX = playerDiffX + playerGridX
+            playerGridY = playerDiffY + playerGridY
+
+            myDestinationTile = gameState.world.grid[playerGridX][playerGridY]  
+
+            if not myDestinationTile.isOccupied():
+
+                myPrevTile = gameState.world.grid[prevPlayerGridX][prevPlayerGridY]
+                
+                Cursor.move(65,9)
+                print(f"My Prev Tile:{myPrevTile.coords}")
+                Cursor.move(65,10)
+                print(f"my Destination Tile: {myDestinationTile.coords}")
+                Cursor.move(65,11)
+                print(f"{self.name}'s Armor Class: {self.armorClass}")
+                Cursor.move(65,12)
+                print(f"equipped: {self.equipped[EQUIP_SLOTS.MAINHAND].name}")
+                
+                myPrevTile.actors.remove(self)
+                myDestinationTile.actors.append(self)
+                self.coords = (playerGridX, playerGridY)
+                Cursor.move(65,13)
+                print(f"my active player coords:{self.coords}")
+
+                myDestinationTile.render()
+
+            else:
+                #If the tile is occupied, we must reset the positioning of active players location for further movement
+                playerGridX = self.coords[0]
+                playerGridY = self.coords[1]
+    
+            if prevPlayerGridX != playerGridX or prevPlayerGridY != playerGridY:
+                myPrevTile.render()
+
+            #myTile.render(cursorFocus=True)
+            # #deterrmine if previously highlighted tile should become un-highlighted
+            # if prevGridX != gridX or prevGridY != gridY:
+            #     myOldTile = gameState.world.grid[prevGridX][prevGridY]
+            #     myOldTile.render(cursorFocus=False)
 
     def equip(self, targetItem):    
         """Prevalidation for the item being able to equip to the targetEquipSlot is presumed true.
@@ -236,3 +302,7 @@ class Monster(Actor):
     def talk(self):
         
         print(f"Rawr. I'm monster {self.id}")
+
+    def searchForTargetInLosRange(self, game):
+        """When players move into monsters line of sight range, monsters attempt to 'perceive' players. If successful, move gamestate to turn based."""
+        
