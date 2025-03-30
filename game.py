@@ -236,16 +236,29 @@ class Game():
             if activePlayer and (playerDiffX != 0 or playerDiffY != 0):
                 activePlayer.handlePlayerMovement(playerDiffX, playerDiffY, self)
                     #determine if previously highlighted tile should become un-highlighted
+
                 if prevGridX != gridX or prevGridY != gridY:
                     myOldTile = myWorld.grid[prevGridX][prevGridY]
                     myOldTile.render(cursorFocus=False)
-                pass
-                nearbyActors = activePlayer.getNearbyActors(self)
-                for actor in nearbyActors:
-                    pass
-                    #friend/foe check
-                    #foes run searchForTargetInLosRange(activeplayer, self)
-                    #return true/false for running combat gamestate
+
+                nearbyActors = activePlayer.getNearbyActors(self.enemies, 15)
+
+                allPerceptionChecks = []
+
+                for actorTuple in nearbyActors:
+                    if actorTuple[0].losRange >= actorTuple[1]:
+                        perceptionCheck = actorTuple[0].perceptionCheck()
+                        allPerceptionChecks.append[perceptionCheck]
+                    
+                if len(allPerceptionChecks) > 0:
+                    if activePlayer.stealthCheck() <= max(allPerceptionChecks):
+                        #Enter combat nerd code
+                        pass
+
+                        """Grab list of enemies in actorTuple, grab all playerActors in matrix and add to combat
+                        'tracker' list. have each actor roll for initiative. Sort actors from highest to lowest.
+                        start combat loop."""
+                    
 
             myTile = None
 

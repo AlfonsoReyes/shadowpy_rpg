@@ -479,7 +479,7 @@ ARMOR_DICT = {
         'maxDexBonus': 3,
         'damageReduction': 1,
         'sneakDisadvantage': False,
-        'swimDisadvantage': False,
+        'swimDisadvantage': True,
         'strengthRequirement': 12,
         'equipType': EQUIP_TYPE.BODY_ARMOR
     },
@@ -489,8 +489,8 @@ ARMOR_DICT = {
         'armorClass': 14,
         'maxDexBonus': 2,
         'damageReduction': 1,
-        'sneakDisadvantage': False,
-        'swimDisadvantage': False,
+        'sneakDisadvantage': True,
+        'swimDisadvantage': True,
         'strengthRequirement': 14,
         'equipType': EQUIP_TYPE.BODY_ARMOR
     },
@@ -500,8 +500,8 @@ ARMOR_DICT = {
         'armorClass': 16,
         'maxDexBonus': 0,
         'damageReduction': 2,
-        'sneakDisadvantage': False,
-        'swimDisadvantage': False,
+        'sneakDisadvantage': True,
+        'swimDisadvantage': True,
         'strengthRequirement': 16,
         'equipType': EQUIP_TYPE.BODY_ARMOR
     }

@@ -49,34 +49,37 @@ class Actor:
 
         return output
     
-    def getNearbyActors(self, game, radius=30):
+    def getNearbyActors(self, listOfActors, radius):
         """Returns a list of actors within radius of this actor"""
-        pass
         nearbyActors = []
-            #code
-
+        for actor in listOfActors:
+            distanceSQR = (self.coords[0] - actor.coords[0])^2 + (self.coords[1] - actor.coords[1])^2
+            if radius^2 >= distanceSQR:
+                distance = math.sqrt(distanceSQR)
+                nearbyActors.append[(actor, distance)]
         return nearbyActors
+
     
 class Player(Actor):
 
     # def __init__(self, id, hp, moveSpeed, losRange, coords, name, inventory=[]):
 
-    def __init__(self, id, hp, moveSpeed, losRange, coords, armorClass, name, inventory, equipped, strength, dexterity, constitution, wisdom, intelligence, charisma, spellList, spellCaster=False):
+    def __init__(self, id, hp, moveSpeed, losRange, coords, armorClass, name, inventory, equipped, strength, dexterity, constitution, awareness, memoryStat, willPower, spellList, spellCaster=False):
         super().__init__(id, hp, moveSpeed, losRange, coords)
 
-        self.name =         name
-        self.inventory =    inventory
-        self.equipped =     equipped
-        self.strength =     strength
-        self.dexterity =    dexterity
-        self.constitution = constitution
-        self.wisdom =       wisdom
-        self.intelligence = intelligence
-        self.charisma =     charisma
-        self.spellCaster =  spellCaster
-        self.spellList =    spellList
+        self.name =                 name
+        self.inventory =            inventory
+        self.equipped =             equipped
+        self.strength =             strength
+        self.dexterity =            dexterity
+        self.constitution =         constitution
+        self.awareness =            awareness
+        self.memoryStat =           memoryStat
+        self.willPower =            willPower
+        self.spellCaster =          spellCaster
+        self.spellList =            spellList
         self.maximumInventorySize = self.maximumInventory()
-        self.armorClass =   self.getArmorClass()
+        self.armorClass =           self.getArmorClass()
         #self.activePlayer = false
 
     def maximumInventory(self):
@@ -195,6 +198,24 @@ class Player(Actor):
                 return self.equipped[EQUIP_SLOTS.BODYARMOR] == None
         return False
 
+    def stealthCheck(self):
+        #Check character for armor
+        bodyArmor = self.equipped[EQUIP_SLOTS.BODYARMOR]
+        if bodyArmor:
+            #If character is wearing armor, check armor for disadvantage on sneak
+            if bodyArmor.armorProperties['sneakDisadvantage'] is True:
+                stealthRoll, rollOutcomes1, rollOutcomes2 = Dice.rollDisadvantage(1,20)
+                stealthRoll += self.getDexterityBonus()
+            #if no disadvantage, roll normally
+            else:
+                stealthRoll, rollOutcomes1, rollOutcomes2 = Dice.roll(1,20)
+                stealthRoll += self.getDexterityBonus()
+        #If naked, just roll normally.
+        else:
+            stealthRoll, rollOutcomes1, rollOutcomes2 = Dice.roll(1,20)
+            stealthRoll += self.getDexterityBonus()
+        return stealthRoll
+        
     #Set of helper functions to collect players stat bonus'
     def getStrengthBonus(self):
         StrengthBonus =         math.floor((self.strength-10)/2)
@@ -205,15 +226,15 @@ class Player(Actor):
     def getConstitutionBonus(self):
         constititionBonus =     math.floor((self.constitution-10)/2)
         return constititionBonus
-    def getWisdomBonus(self):
-        wisdomBonus =           math.floor((self.wisdom-10)/2)
-        return wisdomBonus
-    def getIntelligenceBonus(self):
-        intelligenceBonus =     math.floor((self.intelligence-10)/2)
-        return intelligenceBonus
-    def getCharismaBonus(self):
-        charismaBonus =         math.floor((self.charisma-10)/2)
-        return charismaBonus
+    def getAwarenessBonus(self):
+        awarenessBonus =           math.floor((self.awareness-10)/2)
+        return awarenessBonus
+    def getMemoryBonus(self):
+        memoryStatBonus =     math.floor((self.memoryStat-10)/2)
+        return memoryStatBonus
+    def getWillPowerBonus(self):
+        willPowerBonus =         math.floor((self.willPower-10)/2)
+        return willPowerBonus
     #Set of helper functions to collect players stat bonus'
     
     def attack(self, targetActor, rollType):
@@ -294,15 +315,18 @@ class Player(Actor):
 
 class Monster(Actor): 
 
-    def __init__(self, id, hp, moveSpeed, losRange, coords, armorClass):
+    def __init__(self, id, hp, moveSpeed, losRange, coords, armorClass, awareness):
         super().__init__(id, hp, moveSpeed, losRange, coords)
 
         self.armorClass = armorClass
+        self.awareness = awareness
 
     def talk(self):
         
         print(f"Rawr. I'm monster {self.id}")
 
-    def searchForTargetInLosRange(self, game):
-        """When players move into monsters line of sight range, monsters attempt to 'perceive' players. If successful, move gamestate to turn based."""
+    def perceptionCheck(self):
+        perceptionRoll, diceOutcomes = Dice.roll(1, 20)
+        perceptionRoll += self.awareness()
+        return perceptionRoll
         
