@@ -64,8 +64,8 @@ class Player(Actor):
 
     # def __init__(self, id, hp, moveSpeed, losRange, coords, name, inventory=[]):
 
-    def __init__(self, id, hp, moveSpeed, losRange, coords, armorClass, name, inventory, equipped, strength, dexterity, constitution, awareness, memoryStat, willPower, spellList, spellCaster=False):
-        super().__init__(id, hp, moveSpeed, losRange, coords)
+    def __init__(self, id, hp, moveSpeed, losRange, coords, socialGroup, armorClass, name, inventory, equipped, strength, dexterity, constitution, awareness, memoryStat, willPower, spellList, spellCaster=False):
+        super().__init__(id, hp, moveSpeed, losRange, coords, socialGroup)
 
         self.name =                 name
         self.inventory =            inventory
@@ -315,8 +315,8 @@ class Player(Actor):
 
 class Monster(Actor): 
 
-    def __init__(self, id, hp, moveSpeed, losRange, coords, armorClass, awareness):
-        super().__init__(id, hp, moveSpeed, losRange, coords)
+    def __init__(self, id, hp, moveSpeed, losRange, coords, socialGroup, armorClass, awareness):
+        super().__init__(id, hp, moveSpeed, losRange, coords, socialGroup)
 
         self.armorClass = armorClass
         self.awareness = awareness

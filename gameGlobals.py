@@ -18,6 +18,14 @@ FANTASY_NAMES = [
             "Andareth", "Maelis", "Faylen", "Jorund", "Eldrin"
         ]
 
+class GAME_STATE(Enum):
+    PAUSED = 1
+    FREE_ROAM = 2
+    TURN_BASED = 3
+    CUT_SCENE = 4
+    MAIN_MENU = 5
+    QUIT = 6
+
 class MAX_DEX_BONUS(Enum):
     MAXANY = 4
     MAXTHREE = 3

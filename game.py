@@ -9,6 +9,7 @@ import random
 import math
 from world import World, Tile
 from item import *
+from mainMenu import *
 
 class Game():
     def __init__(self, worldSize = 20, playerToCreate = 1, monstersToCreate = 1):
@@ -18,6 +19,7 @@ class Game():
         self.world: World = self.createWorld()
         self.actorId = 1
         self.populateGame(playerToCreate, monstersToCreate)
+        self.gameState = GAME_STATE.MAIN_MENU
 
     def populateGame(self, playerToCreate, monstersToCreate):
         self.createPlayers(playerToCreate)
@@ -59,7 +61,7 @@ class Game():
             
             starterEquipment = self.getStarterEquipment()
 
-            myPlayer = Player(self.actorId, 8, 30, 30, unoccupiedTile.coords, 10, playerName, starterEquipment, equippedDic, 10, 10, 10, 10, 10, 10, [], False)
+            myPlayer = Player(self.actorId, 8, 30, 30, unoccupiedTile.coords, 'player', 10, playerName, starterEquipment, equippedDic, 10, 10, 10, 10, 10, 10, [], False)
 
             #Auto-equips starter equipment for new players in Player class function
             for myItem in myPlayer.inventory:
@@ -80,7 +82,7 @@ class Game():
             #find random unoccupied tile in the world that we can place actor in
             unoccupiedTile = self.world.getRandomUnoccupiedTile()
             #create player instance once we've found an unoccupied tile they can be placed in
-            myMonster = Monster(self.actorId, 50, 1, 5, unoccupiedTile.coords, 12)
+            myMonster = Monster(self.actorId, 50, 1, 5, unoccupiedTile.coords, 'monster', 12, 12)
             #add player instance to list of world's enemies
             self.enemies.append(myMonster)       
             #add player instance to (formerly unoccupied) tile's list of actors in it
@@ -98,7 +100,67 @@ class Game():
 
         #clear screen
         os.system('cls')
+        while True:
+            match self.gameState:
+                case GAME_STATE.MAIN_MENU:
+                    if self.gameState == GAME_STATE.MAIN_MENU:
+                        self.mainMenu()
+                    pass
 
+                case GAME_STATE.FREE_ROAM:
+                    if self.gameState == GAME_STATE.FREE_ROAM:
+                        self.freeRoam()
+                    pass
+
+                case GAME_STATE.TURN_BASED:
+                    if self.gameState == GAME_STATE.TURN_BASED:
+                        self.turnBased()
+                    pass
+
+                case GAME_STATE.PAUSED:
+                    if self.gameState == GAME_STATE.PAUSED:
+                        self.paused()
+                    pass
+
+                case GAME_STATE.CUT_SCENE:
+                    if self.gameState == GAME_STATE.CUT_SCENE:
+                        self.cutScene()
+                    pass
+
+                case GAME_STATE.QUIT:
+                    break
+
+
+    def mainMenu(self):
+        """Start game, exit game"""
+        menu = MainMenu()
+        menu.render()
+        while True:
+            key = msvcrt.getch()
+
+            if key == b'w':
+            #UP Cursor
+                menu.onUp()
+            #pc.move(DIRECTIONS.UP)
+            if key == b's':
+            #DOWN Cursor
+                menu.onDown()
+            if key == b'\r':
+                selection = menu.getSelectedOption
+                if selection.name == 'Start Game':
+                    self.gameState = GAME_STATE.FREE_ROAM
+                    break
+                if selection.name == 'Exit Game':
+                    self.gameState = GAME_STATE.QUIT
+                    break
+            if key == b'q':
+
+                self.gameState = GAME_STATE.QUIT
+
+                break
+            menu.render()
+
+    def freeRoam(self):
         #create world
         gridSize = 20
         #playerCount = 3
@@ -188,6 +250,7 @@ class Game():
                 cursorRow += 1
 
             if key == b'q':
+                self.gameState = GAME_STATE.QUIT
                 break
             if key == b'w':
                 #UP Cursor
@@ -254,6 +317,10 @@ class Game():
                     if activePlayer.stealthCheck() <= max(allPerceptionChecks):
                         #Enter combat nerd code
                         pass
+                        combatants = []
+                        combatants.extend(self.players)
+                        combatants.extend(nearbyActors)
+                        combatants = self.collectCombatants(combatants)
 
                         """Grab list of enemies in actorTuple, grab all playerActors in matrix and add to combat
                         'tracker' list. have each actor roll for initiative. Sort actors from highest to lowest.
@@ -306,6 +373,25 @@ class Game():
                 print(f"Tile Coords: ({myTile.coords})")
 
             self.renderOverlay(myWorld, myTile)
+
+    def collectCombatants(self, combatantList):
+        """Function grabs all other nearby monsters that would participate in combat."""
+        for combatant in combatantList:
+            #For each monster  in combatlist, it 'calls' for other any other monsters that are within 10units
+            if isinstance(combatant, Monster):
+                newCombatants = combatant.getNearbyActors(self.enemies, 10)
+                #if nearby monster is not already in combat, add to combatant list
+                for newCombatant in newCombatants:
+                    if newCombatant[0] not in combatantList:
+                        combatantList.append(newCombatant[0])
+        return combatantList
+
+    def turnBased(self):
+        pass
+    def cutScene(self):
+        pass
+    def paused(self):
+        pass
 
     def getAdjacentTiles(self, myworld, gridX, gridY):
         rows, cols = len(myworld.grid), len(myworld.grid)
